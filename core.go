@@ -32,8 +32,12 @@ func run(pass *gqlanalysis.Pass) (interface{}, error) {
 	}
 
 	allNodeImplements := map[string]*ast.Definition{}
-	for _, t := range pass.Schema.Implements["Node"] {
-		allNodeImplements[t.Name] = t
+	for name, t := range allTypes {
+		for _, typeInterface := range pass.Schema.Implements[name] {
+			if typeInterface.Kind == ast.Interface && typeInterface.Name == "Node" {
+				allNodeImplements[name] = t
+			}
+		}
 	}
 
 	unconformedTypes := map[string]*ast.Definition{}
@@ -57,6 +61,7 @@ func run(pass *gqlanalysis.Pass) (interface{}, error) {
 				ok = true
 			}
 		}
+
 		if !ok {
 			needToNodeTypes = append(needToNodeTypes, v)
 		}
