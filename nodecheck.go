@@ -65,7 +65,7 @@ func run(excludes string) func(pass *gqlanalysis.Pass) (interface{}, error) {
 
 		for _, t := range needToNodeTypes {
 			// Skip private type. e.g) __Directive, __Enum ...
-			if strings.HasPrefix("__") {
+			if strings.HasPrefix(t.Name, "__") {
 				break
 			}
 			pass.Reportf(t.Position, "%+v should conform to Node", t.Name)
