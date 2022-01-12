@@ -1,0 +1,17 @@
+interface Node {
+  id: ID!
+}
+
+type User implements Node {
+  id: ID!
+}
+
+# Invalid. id is not exists
+type CommunityPayload {
+  name: String! 
+}
+
+# Invalid. id is exists but not conform to Node 
+type ItemPayload {
+  id: ID! 
+}

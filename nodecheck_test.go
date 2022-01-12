@@ -21,3 +21,8 @@ func TestWithMultipleExclusion(t *testing.T) {
 	testdata := analysistest.TestData(t)
 	analysistest.Run(t, testdata, nodecheck.Analyzer("Community,Item"), "c")
 }
+
+func TestWithRegex(t *testing.T) {
+	testdata := analysistest.TestData(t)
+	analysistest.Run(t, testdata, nodecheck.Analyzer(".+Payload"), "d")
+}
