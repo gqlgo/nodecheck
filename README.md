@@ -10,12 +10,12 @@ type User implements Node {
   id: ID!
 }
 
-# Invalid. id is not exists
+# Invalid. not conform to Node
 type Community {
   name: String!
 }
 
-# Invalid. id is exists but not conform to Node 
+# Invalid. not conform to Node but id is exist 
 type Item {
   id: ID!
 }
