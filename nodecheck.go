@@ -1,7 +1,6 @@
 package nodecheck
 
 import (
-	"fmt"
 	"regexp"
 	"strings"
 
@@ -64,14 +63,8 @@ func run(excludes string) func(pass *gqlanalysis.Pass) (interface{}, error) {
 			}
 		}
 
-		if len(needToNodeTypes) > 0 {
-			names := make([]string, len(needToNodeTypes))
-			for i, t := range needToNodeTypes {
-				names[i] = t.Name
-			}
-
-			out := strings.Join(names, ",")
-			return nil, fmt.Errorf("GraphQL types need to conform to Node interface:\n%s", out)
+		for _, t := range needToNodeTypes {
+			pass.Reportf(t.Position, "%+v should conform to Node", t.Name)
 		}
 
 		return nil, nil
