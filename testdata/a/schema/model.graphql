@@ -1,0 +1,17 @@
+interface Node {
+  id: ID!
+}
+
+type User implements Node {
+  id: ID!
+}
+
+# Invalid. id is not exists
+type Community { # want "Community should conform to Node"
+  name: String! 
+}
+
+# Invalid. id is exists but not conform to Node 
+type Item { # want "Item should conform to Node"
+  id: ID!
+}
