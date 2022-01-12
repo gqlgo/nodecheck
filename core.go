@@ -1,7 +1,6 @@
 package nodecheck
 
 import (
-	"flag"
 	"fmt"
 	"regexp"
 	"strings"
@@ -11,65 +10,71 @@ import (
 	"github.com/gqlgo/gqlanalysis"
 )
 
-var excludes string
-var Analyzer = &gqlanalysis.Analyzer{
-	Name: "nodecheck",
-	Doc:  "nodecheck finds invalid GraphQL type that type does not conform Node interface",
-	Flags: func() flag.FlagSet {
-		f := flag.NewFlagSet("node check", flag.ExitOnError)
-		f.StringVar(&excludes, "exclude", "", "exclude GraphQL types for node check. it can specify multiple values separated by `,` and it can use regex(e.g *Connection")
-		return *f
-	}(),
-	Run: run,
+func Analyzer(excludes string) *gqlanalysis.Analyzer {
+	return &gqlanalysis.Analyzer{
+		Name: "nodecheck",
+		Doc:  "nodecheck finds invalid GraphQL type that type does not conform Node interface",
+		Run:  run(excludes),
+	}
 }
 
-func run(pass *gqlanalysis.Pass) (interface{}, error) {
-	allTypes := map[string]*ast.Definition{}
-	for _, def := range pass.Schema.Types {
-		if def.Kind == ast.Object {
-			allTypes[def.Name] = def
-		}
-	}
+func run(excludes string) func(pass *gqlanalysis.Pass) (interface{}, error) {
 
-	allNodeImplements := map[string]*ast.Definition{}
-	for name, t := range allTypes {
-		for _, typeInterface := range pass.Schema.Implements[name] {
-			if typeInterface.Kind == ast.Interface && typeInterface.Name == "Node" {
-				allNodeImplements[name] = t
-			}
-		}
-	}
-
-	unconformedTypes := map[string]*ast.Definition{}
-	for k, v := range allTypes {
-		if _, ok := allNodeImplements[k]; !ok {
-			unconformedTypes[v.Name] = v
-		}
-	}
-
-	needToNodeTypes := []*ast.Definition{}
-
-	for k, v := range unconformedTypes {
-		ok := false
-		for _, rules := range strings.Split(excludes, ",") {
-			regex := regexp.MustCompile(rules)
-
-			if ok {
-				break
-			}
-			if regex.MatchString(k) {
-				ok = true
+	return func(pass *gqlanalysis.Pass) (interface{}, error) {
+		allTypes := map[string]*ast.Definition{}
+		for _, def := range pass.Schema.Types {
+			if def.Kind == ast.Object {
+				allTypes[def.Name] = def
 			}
 		}
 
-		if !ok {
-			needToNodeTypes = append(needToNodeTypes, v)
+		allNodeImplements := map[string]*ast.Definition{}
+		for name, t := range allTypes {
+			for _, typeInterface := range pass.Schema.Implements[name] {
+				if typeInterface.Kind == ast.Interface && typeInterface.Name == "Node" {
+					allNodeImplements[name] = t
+				}
+			}
 		}
-	}
 
-	if len(needToNodeTypes) > 0 {
-		return nil, fmt.Errorf("GraphQL types need to conform to Node type %s", needToNodeTypes)
-	}
+		unconformedTypes := map[string]*ast.Definition{}
+		for k, v := range allTypes {
+			if _, ok := allNodeImplements[k]; !ok {
+				unconformedTypes[v.Name] = v
+			}
+		}
 
-	return nil, nil
+		needToNodeTypes := []*ast.Definition{}
+		for k, v := range unconformedTypes {
+			ok := false
+			for _, rule := range strings.Split(excludes, ",") {
+				if len(rule) > 0 {
+					regex := regexp.MustCompile(rule)
+
+					if ok {
+						break
+					}
+					if regex.MatchString(k) {
+						ok = true
+					}
+				}
+			}
+
+			if !ok {
+				needToNodeTypes = append(needToNodeTypes, v)
+			}
+		}
+
+		if len(needToNodeTypes) > 0 {
+			names := make([]string, len(needToNodeTypes))
+			for i, t := range needToNodeTypes {
+				names[i] = t.Name
+			}
+
+			out := strings.Join(names, "\n")
+			return nil, fmt.Errorf("GraphQL types need to conform to Node type %s", out)
+		}
+
+		return nil, nil
+	}
 }
