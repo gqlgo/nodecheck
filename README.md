@@ -29,6 +29,8 @@ And nodecheck has independ flag for allow exclude types of nodecheck.
 Full example
 
 ```go
+func main() {
+	var excludes string
 	flag.StringVar(&excludes, "excludes", "", "exclude GraphQL types for node check. it can specify multiple values separated by `,` and it can use regex(e.g .+Connection")
 	flag.Parse()
 
@@ -37,27 +39,19 @@ Full example
 	multichecker.Main(
 		analyzer,
 	)
+}
 ```
 
-`lackid` provides a typical main function and you can install with `go install` command.
+`nodecheck` provides a executable binary. So, you can get cmd tool via `go install` command.
 
 ```sh
-$ go install github.com/gqlgo/lackid/cmd/lackid@latest
+$ go install github.com/gqlgo/nodecheck/cmd/nodecheck@latest
 ```
 
-The `lackid` command has two flags, `schema` and `query` which will be parsed and analyzed by lackid's Analyzer.
+The `nodecheck` command receive two flags, `schema` and `excludes`. `excludes` can specify with regex format and it can receive multiple arguments separated by ','.
 
 ```sh
-$ lackid -schema="server/graphql/schema/**/*.graphql" -query="client/**/*.graphql"
-```
-
-The default value of `schema` is "schema/*/**.graphql" and `query` is `query/*/**.graphql`.
-
-`schema` flag accepts URL for a endpoint of GraphQL server.
-`lackid` will get schemas by an introspection query via the endpoint.
-
-```sh
-$ lackid -schema="https://example.com" -query="client/**/*.graphql"
+$ nodecheck -schema="server/graphql/schema/**/*.graphql" -excludes=.+Connection,.+Edge
 ```
 
 ## Author
@@ -65,6 +59,6 @@ $ lackid -schema="https://example.com" -query="client/**/*.graphql"
 [![Appify Technologies, Inc.](appify-logo.png)](http://github.com/appify-technologies)
 
 <!-- links -->
-[gopkg]: https://pkg.go.dev/github.com/gqlgo/lackid
-[gopkg-badge]: https://pkg.go.dev/badge/github.com/gqlgo/lackid?status.svg
+[gopkg]: https://pkg.go.dev/github.com/gqlgo/nodecheck
+[gopkg-badge]: https://pkg.go.dev/badge/github.com/gqlgo/nodecheck?status.svg
 
