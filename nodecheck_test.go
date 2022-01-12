@@ -12,7 +12,12 @@ func Test(t *testing.T) {
 	analysistest.Run(t, testdata, nodecheck.Analyzer(""), "a")
 }
 
-func TestWithSingleExclude(t *testing.T) {
+func TestWithSingleExclusion(t *testing.T) {
 	testdata := analysistest.TestData(t)
 	analysistest.Run(t, testdata, nodecheck.Analyzer("Community"), "b")
+}
+
+func TestWithMultipleExclusion(t *testing.T) {
+	testdata := analysistest.TestData(t)
+	analysistest.Run(t, testdata, nodecheck.Analyzer("Community,Item"), "c")
 }
