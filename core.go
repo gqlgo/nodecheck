@@ -19,7 +19,6 @@ func Analyzer(excludes string) *gqlanalysis.Analyzer {
 }
 
 func run(excludes string) func(pass *gqlanalysis.Pass) (interface{}, error) {
-
 	return func(pass *gqlanalysis.Pass) (interface{}, error) {
 		allTypes := map[string]*ast.Definition{}
 		for _, def := range pass.Schema.Types {
