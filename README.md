@@ -14,6 +14,7 @@ type User implements Node {
 type Community {
   name: String!
 }
+
 # Invalid. id is exists but not conform to Node 
 type Item {
   id: ID!
