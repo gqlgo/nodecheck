@@ -13,7 +13,7 @@ import (
 func Analyzer(excludes string) *gqlanalysis.Analyzer {
 	return &gqlanalysis.Analyzer{
 		Name: "nodecheck",
-		Doc:  "nodecheck finds invalid GraphQL type that type does not conform Node interface",
+		Doc:  "nodecheck will find any GraphQL schema that is not conform to Node interface",
 		Run:  run(excludes),
 	}
 }
