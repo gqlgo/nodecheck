@@ -70,8 +70,8 @@ func run(excludes string) func(pass *gqlanalysis.Pass) (interface{}, error) {
 				names[i] = t.Name
 			}
 
-			out := strings.Join(names, "\n")
-			return nil, fmt.Errorf("GraphQL types need to conform to Node type %s", out)
+			out := strings.Join(names, ",")
+			return nil, fmt.Errorf("GraphQL types need to conform to Node interface:\n%s", out)
 		}
 
 		return nil, nil
