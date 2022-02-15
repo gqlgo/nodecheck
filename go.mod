@@ -1,4 +1,4 @@
-module github.com/bannzai/nodecheck
+module github.com/gqlgo/nodecheck
 
 go 1.16
 
