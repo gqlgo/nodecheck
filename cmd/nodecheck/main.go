@@ -3,8 +3,8 @@ package main
 import (
 	"flag"
 
-	"github.com/bannzai/nodecheck"
 	"github.com/gqlgo/gqlanalysis/multichecker"
+	"github.com/gqlgo/nodecheck"
 )
 
 func main() {

@@ -3,8 +3,8 @@ package nodecheck_test
 import (
 	"testing"
 
-	"github.com/bannzai/nodecheck"
 	"github.com/gqlgo/gqlanalysis/analysistest"
+	"github.com/gqlgo/nodecheck"
 )
 
 func Test(t *testing.T) {
